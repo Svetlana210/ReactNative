@@ -72,7 +72,7 @@ function LoginScreen() {
               style={{
                 ...styles.form,
                 width: dimensions,
-                paddingBottom: isShowKeyboard ? 25 : 134,
+                paddingBottom: isShowKeyboard ? 5 : 134,
               }}
             >
               <View>
@@ -201,6 +201,7 @@ const styles = StyleSheet.create({
     marginTop: 32,
   },
   input: {
+    width: 343,
     padding: 16,
     borderWidth: 1,
     borderRadius: 8,
@@ -211,9 +212,10 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
   },
   btn: {
+    width: 343,
     paddingHorizontal: 32,
     paddingVertical: 16,
-    marginTop: 15,
+    marginTop: 22,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6C00",

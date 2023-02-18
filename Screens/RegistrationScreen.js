@@ -76,7 +76,7 @@ function RegistrationScreen() {
               style={{
                 ...styles.form,
                 width: dimensions,
-                paddingBottom: isShowKeyboard ? 2 : 50,
+                paddingBottom: isShowKeyboard ? 2 : 55,
               }}
             >
               <View style={styles.imageContainer}>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   form: {
-    paddingHorizontal: 16,
+    // paddingHorizontal: 16,
     position: "relative",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -234,6 +234,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Bold",
   },
   input: {
+    width: 343,
     padding: 16,
     borderWidth: 1,
     borderRadius: 8,
@@ -244,6 +245,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto-Regular",
   },
   btn: {
+    width: 343,
     paddingHorizontal: 32,
     paddingVertical: 16,
     marginTop: 15,
