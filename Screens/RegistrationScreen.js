@@ -31,23 +31,20 @@ function RegistrationScreen() {
   const [isFocusedLogin, setIsFocusedLogin] = useState(false);
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
-  const [dimensions, setDimensions] = useState(
-    Dimensions.get("window").width - 16 * 2
-  );
+  const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
   const { passwordVisibility, rightWord, handlePasswordVisibility } =
     useTogglePasswordVisibility();
 
-  // useEffect(() => {
-  //   const onChange = () => {
-  //     const width = Dimensions.get("window").width - 40 * 2;
-  //     setDimensions(width);
-  //   };
-  //   const dimensionsHandler = Dimensions.addEventListener("change", onChange);
-  //   return () => {
-  //     dimensionsHandler?.remove();
-  //     setDimensions(Dimensions.get("window").width - 16 * 2);
-  //   };
-  // }, [setDimensions]);
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width - 40 * 2;
+      setDimensions(width);
+    };
+    const dimensionsHandler = Dimensions.addEventListener("change", onChange);
+    return () => {
+      dimensionsHandler?.remove();
+    };
+  }, []);
 
   const handleSubmit = () => {
     if (state.email && state.password) {
@@ -78,6 +75,7 @@ function RegistrationScreen() {
             <View
               style={{
                 ...styles.form,
+                width: dimensions,
                 paddingBottom: isShowKeyboard ? 2 : 50,
               }}
             >
@@ -103,7 +101,7 @@ function RegistrationScreen() {
                 <TextInput
                   style={{
                     ...styles.input,
-                    width: dimensions,
+
                     borderColor: isFocusedLogin ? "#FF6C00" : "#E8E8E8",
                     backgroundColor: isFocusedLogin ? "#FFFFFF" : "#F6F6F6",
                   }}
@@ -126,7 +124,7 @@ function RegistrationScreen() {
                 <TextInput
                   style={{
                     ...styles.input,
-                    width: dimensions,
+
                     borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
                     backgroundColor: isFocusedEmail ? "#FFFFFF" : "#F6F6F6",
                   }}
@@ -151,7 +149,7 @@ function RegistrationScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      width: dimensions,
+
                       borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
                       backgroundColor: isFocusedPassword
                         ? "#FFFFFF"
@@ -189,7 +187,6 @@ function RegistrationScreen() {
                 style={{
                   ...styles.btn,
                   display: isShowKeyboard ? "none" : "block",
-                  width: dimensions,
                 }}
                 activeOpacity={0.7}
                 onPress={handleSubmit}

@@ -30,9 +30,7 @@ function LoginScreen() {
 
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
-  const [dimensions, setDimensions] = useState(
-    Dimensions.get("window").width - 16 * 2
-  );
+  const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
   const { passwordVisibility, rightWord, handlePasswordVisibility } =
     useTogglePasswordVisibility();
 
@@ -44,7 +42,6 @@ function LoginScreen() {
     const dimensionsHandler = Dimensions.addEventListener("change", onChange);
     return () => {
       dimensionsHandler?.remove();
-      setDimensions(Dimensions.get("window").width - 16 * 2);
     };
   }, []);
 
@@ -63,20 +60,18 @@ function LoginScreen() {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
-
+  const image = "../assets/photo.png";
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={keyboardHide}>
-        <ImageBackground
-          style={styles.image}
-          source={require("../assets/bg.jpg")}
-        >
+        <ImageBackground style={styles.image} source={require(image)}>
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
             <View
               style={{
                 ...styles.form,
+                width: dimensions,
                 paddingBottom: isShowKeyboard ? 25 : 134,
               }}
             >
@@ -93,7 +88,7 @@ function LoginScreen() {
                 <TextInput
                   style={{
                     ...styles.input,
-                    width: dimensions,
+
                     borderColor: isFocusedEmail ? "#FF6C00" : "#E8E8E8",
                     backgroundColor: isFocusedEmail ? "#FFFFFF" : "#F6F6F6",
                   }}
@@ -118,7 +113,7 @@ function LoginScreen() {
                   <TextInput
                     style={{
                       ...styles.input,
-                      width: dimensions,
+
                       borderColor: isFocusedPassword ? "#FF6C00" : "#E8E8E8",
                       backgroundColor: isFocusedPassword
                         ? "#FFFFFF"
@@ -157,7 +152,6 @@ function LoginScreen() {
                 style={{
                   ...styles.btn,
                   display: isShowKeyboard ? "none" : "block",
-                  width: dimensions,
                 }}
                 activeOpacity={0.7}
                 onPress={handleSubmit}
