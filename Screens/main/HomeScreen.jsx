@@ -6,7 +6,7 @@ import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const NestedStack = createNativeStackNavigator();
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = () => {
   return (
     <NestedStack.Navigator
       initialRouteName={PostsScreen}
