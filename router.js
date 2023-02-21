@@ -6,11 +6,12 @@ import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import RegistrationScreen from "./Screens/auth/RegistrationScreen";
 import LoginScreen from "./Screens/auth/LoginScreen";
-import PostsScreen from "./Screens/main/PostsScreen";
+
 import CreatePostsScreen from "./Screens/main/CreatePostsScreen";
 import ProfileScreen from "./Screens/main/ProfileScreen";
 
 import GoBackBtn from "./components/GoBackBtn";
+import HomeScreen from "./Screens/main/HomeScreen";
 
 const AuthStack = createNativeStackNavigator();
 const MainTab = createBottomTabNavigator();
@@ -18,7 +19,7 @@ const MainTab = createBottomTabNavigator();
 export const useRoute = (isAuth) => {
   if (!isAuth) {
     return (
-      <AuthStack.Navigator>
+      <AuthStack.Navigator initialRouteName="Login">
         <AuthStack.Screen
           options={{ headerShown: false }}
           name="Login"
@@ -34,12 +35,12 @@ export const useRoute = (isAuth) => {
   }
   return (
     <MainTab.Navigator
+      initialRouteName={HomeScreen}
       screenOptions={{
-        // headerShown: false,
         headerTitleAlign: "center",
         headerTitleStyle: {
           fontFamily: "Roboto-Medium",
-          //   fontWeight: "500",
+
           fontSize: 17,
           lineHeight: 22,
           letterSpacing: -0.4,
@@ -62,21 +63,15 @@ export const useRoute = (isAuth) => {
       }}
     >
       <MainTab.Screen
+        name="Home"
+        component={HomeScreen}
         options={{
-          headerStyle: { height: 70 },
-          headerRight: () => (
-            <TouchableOpacity style={{ width: 24, marginRight: 16 }}>
-              <MaterialIcons name="logout" size={24} color={"#BDBDBD"} />
-            </TouchableOpacity>
-          ),
-          headerShown: true,
+          headerShown: false,
 
           tabBarIcon: ({ focused, size, color }) => (
             <AntDesign name="appstore-o" size={24} color={color} />
           ),
         }}
-        name="Публикации"
-        component={PostsScreen}
       />
       <MainTab.Screen
         options={{
@@ -90,7 +85,7 @@ export const useRoute = (isAuth) => {
             <Ionicons name="add-outline" size={24} color={"#ffffff"} />
           ),
         }}
-        name="Создать публикацию"
+        name="Create post"
         component={CreatePostsScreen}
       />
       <MainTab.Screen

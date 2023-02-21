@@ -29,7 +29,7 @@ export default function App() {
   return (
     // <View style={styles.container} onLayout={onLayoutRootView}>
     <NavigationContainer>{routing}</NavigationContainer>
-    //</View>
+    // </View>
   );
 }
 
