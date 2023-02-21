@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useTogglePasswordVisibility } from "../hooks/togglePasswordVisibility";
+import { useTogglePasswordVisibility } from "../../hooks/togglePasswordVisibility";
 
 import {
   ImageBackground,
@@ -16,7 +16,6 @@ import {
   Dimensions,
   Pressable,
   Alert,
-  LogBox,
 } from "react-native";
 
 const initialState = {
@@ -25,10 +24,10 @@ const initialState = {
   password: "",
 };
 
-function RegistrationScreen() {
-  const [state, setstate] = useState(initialState);
+function LoginScreen({ navigation }) {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [isFocusedLogin, setIsFocusedLogin] = useState(false);
+  const [state, setstate] = useState(initialState);
+
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
@@ -61,14 +60,11 @@ function RegistrationScreen() {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
-
+  const image = "../../assets/photo.png";
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={keyboardHide}>
-        <ImageBackground
-          style={styles.image}
-          source={require("../assets/bg.jpg")}
-        >
+        <ImageBackground style={styles.image} source={require(image)}>
           <KeyboardAvoidingView
             behavior={Platform.OS == "ios" ? "padding" : "height"}
           >
@@ -76,51 +72,19 @@ function RegistrationScreen() {
               style={{
                 ...styles.form,
                 width: dimensions,
-                paddingBottom: isShowKeyboard ? 2 : 55,
+                paddingBottom: isShowKeyboard ? 5 : 134,
               }}
             >
-              <View style={styles.imageContainer}>
-                <Image
-                  source={require("../assets/add.png")}
-                  style={styles.plus}
-                />
-              </View>
-
               <View>
                 <Text
                   style={{
                     ...styles.text,
-                    marginTop: isShowKeyboard ? 68 : 82,
-                    marginBottom: isShowKeyboard ? 10 : 30,
                   }}
                 >
-                  Регистрация
+                  Войти
                 </Text>
               </View>
               <View>
-                <TextInput
-                  style={{
-                    ...styles.input,
-
-                    borderColor: isFocusedLogin ? "#FF6C00" : "#E8E8E8",
-                    backgroundColor: isFocusedLogin ? "#FFFFFF" : "#F6F6F6",
-                  }}
-                  placeholder="Логин"
-                  value={state.login}
-                  autoCorrect={false}
-                  autoCapitalize="none"
-                  onFocus={() => {
-                    setIsShowKeyboard(true);
-                    setIsFocusedLogin(true);
-                  }}
-                  onBlur={() => {
-                    setIsShowKeyboard(false);
-                    setIsFocusedLogin(false);
-                  }}
-                  onChangeText={(value) =>
-                    setstate((prevState) => ({ ...prevState, login: value }))
-                  }
-                />
                 <TextInput
                   style={{
                     ...styles.input,
@@ -184,6 +148,7 @@ function RegistrationScreen() {
                 </View>
               </View>
               <TouchableOpacity
+                // style={styles.btn}
                 style={{
                   ...styles.btn,
                   display: isShowKeyboard ? "none" : "block",
@@ -191,16 +156,20 @@ function RegistrationScreen() {
                 activeOpacity={0.7}
                 onPress={handleSubmit}
               >
-                <Text style={styles.btnText}>Зарегистрироваться</Text>
+                <Text style={styles.btnText}>Войти</Text>
               </TouchableOpacity>
-              <Text
-                style={{
-                  ...styles.smallText,
-                  display: isShowKeyboard ? "none" : "block",
-                }}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Registration")}
               >
-                Уже есть аккаунт? Войти
-              </Text>
+                <Text
+                  style={{
+                    ...styles.smallText,
+                    display: isShowKeyboard ? "none" : "block",
+                  }}
+                >
+                  Нет аккаунта? Зарегистрироваться
+                </Text>
+              </TouchableOpacity>
             </View>
           </KeyboardAvoidingView>
         </ImageBackground>
@@ -221,7 +190,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   form: {
-    // paddingHorizontal: 16,
+    paddingHorizontal: 16,
     position: "relative",
     alignItems: "center",
     backgroundColor: "#fff",
@@ -232,6 +201,8 @@ const styles = StyleSheet.create({
     color: "212121",
     fontSize: 30,
     fontFamily: "Roboto-Bold",
+    marginBottom: 32,
+    marginTop: 32,
   },
   input: {
     width: 343,
@@ -248,7 +219,7 @@ const styles = StyleSheet.create({
     width: 343,
     paddingHorizontal: 32,
     paddingVertical: 16,
-    marginTop: 15,
+    marginTop: 22,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#FF6C00",
@@ -262,6 +233,7 @@ const styles = StyleSheet.create({
   smallText: {
     marginTop: 16,
     fontSize: 16,
+    fontFamily: "Roboto-Regular",
   },
   imageContainer: {
     position: "absolute",
@@ -292,4 +264,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RegistrationScreen;
+export default LoginScreen;

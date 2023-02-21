@@ -3,9 +3,11 @@ import React, { useCallback } from "react";
 import { StyleSheet, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { useRoute } from "./router";
+
 SplashScreen.preventAutoHideAsync();
-import RegistrationScreen from "./Screens/RegistrationScreen.js";
-import LoginScreen from "./Screens/LoginScreen.js";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -22,11 +24,12 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+
+  const routing = useRoute({});
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      {/* <RegistrationScreen /> */}
-      <LoginScreen />
-    </View>
+    // <View style={styles.container} onLayout={onLayoutRootView}>
+    <NavigationContainer>{routing}</NavigationContainer>
+    //</View>
   );
 }
 
