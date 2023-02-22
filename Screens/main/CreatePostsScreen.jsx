@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Text,
   View,
@@ -9,8 +9,12 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { Camera } from "expo-camera";
+
+import * as Location from "expo-location";
 
 const initialState = {
   name: "",
@@ -20,6 +24,11 @@ const initialState = {
 const CreatePostsScreen = ({ navigation }) => {
   const [state, setState] = useState(initialState);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [camera, setCamera] = useState(null);
+  const [photo, setPhoto] = useState(null);
+
+  const [hasPermissionCamera, setHasPermissionCamera] = useState(null);
+  const [hasPermissionLocation, setHasPermissionLocation] = useState(null);
 
   const nameInputHandler = (text) => {
     setState((prevState) => ({ ...prevState, name: text }));
@@ -33,6 +42,29 @@ const CreatePostsScreen = ({ navigation }) => {
     setShowKeyboard(false);
     Keyboard.dismiss();
   };
+  useEffect(() => {
+    (async () => {
+      console.log("createPost useEffect");
+
+      let cameraPermission = await Camera.requestCameraPermissionsAsync();
+      setHasPermissionCamera(cameraPermission.status === "granted");
+
+      let locationPermission =
+        await Location.requestForegroundPermissionsAsync();
+      setHasPermissionLocation(locationPermission.status === "granted");
+    })();
+  }, []);
+
+  const takePhoto = async () => {
+    const photo = await camera.takePictureAsync();
+    const location = await Location.getCurrentPositionAsync();
+    console.log(location.coords);
+    setPhoto(photo.uri);
+  };
+
+  const publishPhoto = () => {
+    navigation.navigate("Posts", { photo });
+  };
 
   return (
     <KeyboardAvoidingView
@@ -45,20 +77,29 @@ const CreatePostsScreen = ({ navigation }) => {
         >
           <View style={{ flex: 1 }}>
             <View style={styles.pictureContainer}>
-              {/* Кнопка сделать фото */}
-              <TouchableOpacity
-                // style={{ ...styles.cameraBtnContainer, backgroundColor: state.photo ? 'rgba(255, 255, 255, 0.3)' : '#FFFFFF' }}
-                style={styles.snapBtn}
-                activeOpacity={0.8}
-              >
-                <MaterialIcons
-                  name="camera-alt"
-                  size={24}
-                  style={styles.snapIcon}
-                />
-              </TouchableOpacity>
-            </View>
+              <Camera style={styles.camera} ref={setCamera}>
+                {photo && (
+                  <View style={styles.cont}>
+                    <Image
+                      source={{ uri: photo }}
+                      style={{ height: 100, width: 100 }}
+                    />
+                  </View>
+                )}
 
+                <TouchableOpacity
+                  onPress={takePhoto}
+                  style={styles.snapBtn}
+                  activeOpacity={0.8}
+                >
+                  <MaterialIcons
+                    name="camera-alt"
+                    size={24}
+                    style={styles.snapIcon}
+                  />
+                </TouchableOpacity>
+              </Camera>
+            </View>
             {/* Блок под превью/камерой */}
 
             <TouchableOpacity activeOpacity={0.8}>
@@ -100,6 +141,7 @@ const CreatePostsScreen = ({ navigation }) => {
               activeOpacity={0.8}
             >
               <Text
+                onPress={publishPhoto}
                 style={{
                   ...styles.publishBtnTxt,
                 }}
@@ -124,6 +166,13 @@ const CreatePostsScreen = ({ navigation }) => {
 export default CreatePostsScreen;
 
 const styles = StyleSheet.create({
+  cont: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    borderWidth: 1,
+    borderColor: "#ffffff",
+  },
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
@@ -160,7 +209,7 @@ const styles = StyleSheet.create({
 
   camera: {
     height: 240,
-    width: 180, //'100%'
+    width: "100%",
     marginLeft: "auto",
     marginRight: "auto",
     flex: 1,
@@ -195,6 +244,8 @@ const styles = StyleSheet.create({
   },
   snapBtn: {
     position: "absolute",
+    top: 70,
+    left: 140,
     backgroundColor: "#ffffff",
     borderRadius: 50,
 

@@ -1,7 +1,9 @@
 import React from "react";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import PostsScreen from "./PostsScreen";
+import PostsScreen from "../nests/PostsScreen";
+import MapScreen from "../nests/MapScreen";
+import CommentsScreen from "../nests/CommentsScreen";
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 const NestedStack = createNativeStackNavigator();
@@ -9,16 +11,16 @@ const NestedStack = createNativeStackNavigator();
 const HomeScreen = () => {
   return (
     <NestedStack.Navigator
-      initialRouteName={PostsScreen}
-      screenOptions={{
-        headerTitleAlign: "center",
-        headerTitleStyle: {
-          fontFamily: "Roboto-Bold",
-          fontSize: 17,
-          lineHight: 22,
-          letterSpacing: -0.4,
-        },
-      }}
+    // initialRouteName={PostsScreen}
+    // screenOptions={{
+    //   headerTitleAlign: "center",
+    //   headerTitleStyle: {
+    //     fontFamily: "Roboto-Bold",
+    //     fontSize: 17,
+    //     lineHight: 22,
+    //     letterSpacing: -0.4,
+    //   },
+    // }}
     >
       <NestedStack.Screen
         name="Posts"
@@ -31,6 +33,12 @@ const HomeScreen = () => {
             </TouchableOpacity>
           ),
         }}
+      />
+      <NestedStack.Screen name="Map" component={MapScreen} options={{}} />
+      <NestedStack.Screen
+        name="Comments"
+        component={CommentsScreen}
+        options={{}}
       />
     </NestedStack.Navigator>
   );

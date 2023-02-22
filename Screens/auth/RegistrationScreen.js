@@ -52,7 +52,6 @@ function RegistrationScreen({ navigation }) {
       console.log(state);
       Keyboard.dismiss();
       setstate(initialState);
-      navigation.navigate("Home", { screen: "Posts" });
     } else {
       Alert.alert("Введите данные");
     }

@@ -25,11 +25,11 @@ export default function App() {
     return null;
   }
 
-  const routing = useRoute(null);
+  const routing = useRoute({});
   return (
-    // <View style={styles.container} onLayout={onLayoutRootView}>
-    <NavigationContainer>{routing}</NavigationContainer>
-    //</View>
+    <View style={styles.container} onLayout={onLayoutRootView}>
+      <NavigationContainer>{routing}</NavigationContainer>
+    </View>
   );
 }
 
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+
     justifyContent: "center",
   },
 });

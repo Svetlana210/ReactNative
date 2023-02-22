@@ -35,7 +35,7 @@ export const useRoute = (isAuth) => {
   }
   return (
     <MainTab.Navigator
-      initialRouteName={HomeScreen}
+      initialRouteName="Home"
       screenOptions={{
         headerTitleAlign: "center",
         headerTitleStyle: {

@@ -31,6 +31,7 @@ function LoginScreen({ navigation }) {
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+
   const { passwordVisibility, rightWord, handlePasswordVisibility } =
     useTogglePasswordVisibility();
 
@@ -51,7 +52,6 @@ function LoginScreen({ navigation }) {
       console.log(state);
       Keyboard.dismiss();
       setstate(initialState);
-      navigation.navigate("Home", { screen: "Posts" });
     } else {
       Alert.alert("Введите данные");
     }

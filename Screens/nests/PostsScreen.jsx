@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import PostsList from "../../components/PostsList";
-const PostsScreen = () => {
+
+const PostsScreen = ({ route, navigation }) => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (route.params) {
+      setPosts((prevState) => [...prevState, route.params]);
+    }
+  }, [route.params]);
+
   return (
     <View style={styles.container}>
       <View style={styles.user}>
@@ -19,7 +28,7 @@ const PostsScreen = () => {
           <Text style={styles.userInfoEmail}>email@example.com</Text>
         </View>
       </View>
-      <PostsList />
+      <PostsList posts={posts} navigation={navigation} />
     </View>
   );
 };
