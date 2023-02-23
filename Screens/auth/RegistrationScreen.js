@@ -18,7 +18,9 @@ import {
   Alert,
   LogBox,
 } from "react-native";
+import { useDispatch } from "react-redux";
 
+import { authSignUpUser } from "../../redux/auth/authOperations";
 const initialState = {
   login: "",
   email: "",
@@ -32,6 +34,9 @@ function RegistrationScreen({ navigation }) {
   const [isFocusedEmail, setIsFocusedEmail] = useState(false);
   const [isFocusedPassword, setIsFocusedPassword] = useState(false);
   const [dimensions, setDimensions] = useState(Dimensions.get("window").width);
+
+  const dispatch = useDispatch();
+
   const { passwordVisibility, rightWord, handlePasswordVisibility } =
     useTogglePasswordVisibility();
 
@@ -50,6 +55,7 @@ function RegistrationScreen({ navigation }) {
     if (state.email && state.password) {
       setIsShowKeyboard(false);
       console.log(state);
+      dispatch(authSignUpUser(state));
       Keyboard.dismiss();
       setstate(initialState);
     } else {

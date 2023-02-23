@@ -44,8 +44,6 @@ const CreatePostsScreen = ({ navigation }) => {
   };
   useEffect(() => {
     (async () => {
-      console.log("createPost useEffect");
-
       let cameraPermission = await Camera.requestCameraPermissionsAsync();
       setHasPermissionCamera(cameraPermission.status === "granted");
 

@@ -9,10 +9,15 @@ import {
 } from "react-native";
 import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
 import PostsList from "../../components/PostsList";
+import db from "../../firebase/config";
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const BG = "../../assets/photo.png";
 
 const ProfileScreen = () => {
+  const dispatch = useDispatch();
+  const signOut = () => [dispatch(authSignOutUser())];
   return (
     <View style={styles.container}>
       <ImageBackground source={require(BG)} style={styles.bgImage}>
@@ -38,7 +43,11 @@ const ProfileScreen = () => {
           </View>
 
           {/* Кнопка Логаут */}
-          <TouchableOpacity style={styles.logoutButton} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.logoutButton}
+            activeOpacity={0.8}
+            onPress={signOut}
+          >
             <MaterialIcons name="logout" size={24} color={"#BDBDBD"} />
           </TouchableOpacity>
 

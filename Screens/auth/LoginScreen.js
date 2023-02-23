@@ -18,6 +18,9 @@ import {
   Alert,
 } from "react-native";
 
+import { useDispatch } from "react-redux";
+import { authSignInUser } from "../../redux/auth/authOperations";
+
 const initialState = {
   login: "",
   email: "",
@@ -35,6 +38,7 @@ function LoginScreen({ navigation }) {
   const { passwordVisibility, rightWord, handlePasswordVisibility } =
     useTogglePasswordVisibility();
 
+  const dispatch = useDispatch();
   useEffect(() => {
     const onChange = () => {
       const width = Dimensions.get("window").width - 40 * 2;
@@ -49,7 +53,9 @@ function LoginScreen({ navigation }) {
   const handleSubmit = () => {
     if (state.email && state.password) {
       setIsShowKeyboard(false);
-      console.log(state);
+      console.log("submit", state);
+      dispatch(authSignInUser(state));
+
       Keyboard.dismiss();
       setstate(initialState);
     } else {
