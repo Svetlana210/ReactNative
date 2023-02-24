@@ -8,7 +8,24 @@ import {
   FlatList,
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import { doc, updateDoc } from "firebase/firestore";
+
+import { db } from "../firebase/config";
+
 const PostsList = ({ posts, navigation }) => {
+  const { userId } = useSelector((state) => state.auth);
+  const setLike = async (postId, likeUserIdsArray) => {
+    const userExist = likeUserIdsArray.find((user) => user === userId);
+
+    if (!userExist) {
+      const docRef = doc(db, "posts", postId);
+      await updateDoc(docRef, {
+        likes: [...likeUserIdsArray, userId],
+      });
+    }
+  };
+
   return (
     <FlatList
       data={posts}
@@ -27,7 +44,11 @@ const PostsList = ({ posts, navigation }) => {
               <TouchableOpacity
                 style={styles.commentsAndLikesBtn}
                 onPress={() => {
-                  navigation.navigate("Comments", { postId: item.id });
+                  navigation.navigate("Comments", {
+                    postId: item.id,
+                    postImage: item.photo,
+                    postComments: item.comments,
+                  });
                 }}
               >
                 <Feather
@@ -35,7 +56,7 @@ const PostsList = ({ posts, navigation }) => {
                   size={22}
                   style={{
                     marginRight: 6,
-                    color: "#bdbdbd",
+                    color: item.comments < 1 ? "#bdbdbd" : "#FF6C00",
                   }}
                 />
                 <Text style={styles.numberComments}>0</Text>
@@ -44,7 +65,7 @@ const PostsList = ({ posts, navigation }) => {
               {/* Кнопка Лайки */}
               <TouchableOpacity
                 style={styles.commentsAndLikesBtn}
-                onPress={() => {}}
+                onPress={() => setLike(item.id, item.likes)}
               >
                 <Feather
                   name="thumbs-up"
@@ -70,7 +91,7 @@ const PostsList = ({ posts, navigation }) => {
                 color={"#BDBDBD"}
                 style={{ marginRight: 4 }}
               />
-              <Text style={styles.locationLink}>Ukraine</Text>
+              <Text style={styles.locationLink}>{item.locality}</Text>
             </TouchableOpacity>
           </View>
         </View>

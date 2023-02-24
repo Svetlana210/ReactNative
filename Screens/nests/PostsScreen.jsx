@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet, Image } from "react-native";
 import PostsList from "../../components/PostsList";
 import db from "../../firebase/config";
+import { useSelector } from "react-redux";
 
 const PostsScreen = ({ route, navigation }) => {
   const [posts, setPosts] = useState([]);
@@ -14,7 +15,7 @@ const PostsScreen = ({ route, navigation }) => {
         setPosts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
       );
   };
-
+  const { login, email } = useSelector((state) => state.auth);
   useEffect(() => {
     getAllPosts();
   }, []);
@@ -30,10 +31,10 @@ const PostsScreen = ({ route, navigation }) => {
 
         <View style={styles.userInfo}>
           {/* Имя */}
-          <Text style={styles.userInfoName}>Natali Romanova</Text>
+          <Text style={styles.userInfoName}>{login}</Text>
 
           {/* Email */}
-          <Text style={styles.userInfoEmail}>email@example.com</Text>
+          <Text style={styles.userInfoEmail}>{email}</Text>
         </View>
       </View>
       <PostsList posts={posts} navigation={navigation} />

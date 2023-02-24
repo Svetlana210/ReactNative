@@ -17,10 +17,10 @@ import db from "../../firebase/config";
 import { useSelector } from "react-redux";
 
 const CommentsScreen = ({ route }) => {
-  const { postId } = route.params;
+  const { postId, postImage, postComments } = route.params;
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [comment, setComment] = useState("");
-  const [allComments, setAllComments] = useState([]);
+  const [allComments, setAllComments] = useState(postComments);
   const { login } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -64,10 +64,7 @@ const CommentsScreen = ({ route }) => {
       <TouchableWithoutFeedback onPress={hideKeyboard}>
         <View style={styles.inner}>
           {/* Пост фото */}
-          <Image
-            style={styles.postImage}
-            source={require("../../assets/nat.png")}
-          />
+          <Image style={styles.postImage} source={{ uri: postImage }} />
           {/* Список комментариев */}
           <FlatList
             style={styles.list}

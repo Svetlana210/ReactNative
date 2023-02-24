@@ -29,6 +29,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
   const [comment, setComment] = useState("");
+  const [locality, setLocality] = useState(null);
   const [location, setLocation] = useState(null);
 
   const [hasPermissionCamera, setHasPermissionCamera] = useState(null);
@@ -75,10 +76,16 @@ const CreatePostsScreen = ({ navigation }) => {
 
   const uploadPostToServer = async () => {
     const photo = await uploadPhotoToServer();
-    const createPost = await db
-      .firestore()
-      .collection("posts")
-      .add({ photo, comment, location: location.coords, login, userId });
+    const createPost = await db.firestore().collection("posts").add({
+      photo,
+      comment,
+      location: location.coords,
+      locality,
+      login,
+      userId,
+      comments: [],
+      likes: [],
+    });
   };
 
   const uploadPhotoToServer = async () => {
@@ -156,8 +163,8 @@ const CreatePostsScreen = ({ navigation }) => {
                 placeholder="Местность..."
                 placeholderTextColor="#BDBDBD"
                 style={styles.inputLocality}
-                // value={state.place}
-                // onChangeText={placeInputHandler}
+                value={locality}
+                onChangeText={setLocality}
                 // onFocus={() => setShowKeyboard(true)}
                 // onBlur={() => setShowKeyboard(false)}
               />
