@@ -13,30 +13,35 @@ import {
 } from "react-native";
 import { Feather, MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { Camera } from "expo-camera";
+import db from "../../firebase/config";
 
 import * as Location from "expo-location";
+import { useSelector } from "react-redux";
 
-const initialState = {
-  name: "",
-  place: "",
-};
+// const initialState = {
+//   name: "",
+//   place: "",
+// };
 
 const CreatePostsScreen = ({ navigation }) => {
-  const [state, setState] = useState(initialState);
+  // const [state, setState] = useState(initialState);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [camera, setCamera] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const [comment, setComment] = useState("");
+  const [location, setLocation] = useState(null);
 
   const [hasPermissionCamera, setHasPermissionCamera] = useState(null);
   const [hasPermissionLocation, setHasPermissionLocation] = useState(null);
 
-  const nameInputHandler = (text) => {
-    setState((prevState) => ({ ...prevState, name: text }));
-  };
+  const { userId, login } = useSelector((state) => state.auth);
+  // const nameInputHandler = (text) => {
+  //   setState((prevState) => ({ ...prevState, name: text }));
+  // };
 
-  const placeInputHandler = (text) => {
-    setState((prevState) => ({ ...prevState, place: text }));
-  };
+  // const placeInputHandler = (text) => {
+  //   setState((prevState) => ({ ...prevState, place: text }));
+  // };
 
   const hideKeyboard = () => {
     setShowKeyboard(false);
@@ -50,18 +55,44 @@ const CreatePostsScreen = ({ navigation }) => {
       let locationPermission =
         await Location.requestForegroundPermissionsAsync();
       setHasPermissionLocation(locationPermission.status === "granted");
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
     })();
   }, []);
 
   const takePhoto = async () => {
     const photo = await camera.takePictureAsync();
-    const location = await Location.getCurrentPositionAsync();
-    console.log(location.coords);
+
+    // console.log(location.coords);
     setPhoto(photo.uri);
   };
 
   const publishPhoto = () => {
-    navigation.navigate("Posts", { photo });
+    navigation.navigate("Posts");
+    uploadPostToServer();
+  };
+
+  const uploadPostToServer = async () => {
+    const photo = await uploadPhotoToServer();
+    const createPost = await db
+      .firestore()
+      .collection("posts")
+      .add({ photo, comment, location: location.coords, login, userId });
+  };
+
+  const uploadPhotoToServer = async () => {
+    const response = await fetch(photo);
+    const file = await response.blob();
+    const uniquePostId = Date.now().toString();
+    await db.storage().ref(`postImage/${uniquePostId}`).put(file);
+
+    const processedPhoto = await db
+      .storage()
+      .ref("postImage")
+      .child(uniquePostId)
+      .getDownloadURL();
+    return processedPhoto;
   };
 
   return (
@@ -108,8 +139,8 @@ const CreatePostsScreen = ({ navigation }) => {
               placeholder="Название..."
               placeholderTextColor="#BDBDBD"
               style={styles.inputDescription}
-              value={state.name}
-              onChangeText={nameInputHandler}
+              value={comment}
+              onChangeText={setComment}
               // onFocus={() => setShowKeyboard(true)}
               // onBlur={() => setShowKeyboard(false)}
             />
@@ -125,8 +156,8 @@ const CreatePostsScreen = ({ navigation }) => {
                 placeholder="Местность..."
                 placeholderTextColor="#BDBDBD"
                 style={styles.inputLocality}
-                value={state.place}
-                onChangeText={placeInputHandler}
+                // value={state.place}
+                // onChangeText={placeInputHandler}
                 // onFocus={() => setShowKeyboard(true)}
                 // onBlur={() => setShowKeyboard(false)}
               />

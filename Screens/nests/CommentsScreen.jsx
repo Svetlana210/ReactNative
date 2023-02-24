@@ -13,9 +13,37 @@ import {
   FlatList,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import db from "../../firebase/config";
+import { useSelector } from "react-redux";
 
-const CommentsScreen = () => {
+const CommentsScreen = ({ route }) => {
+  const { postId } = route.params;
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
+  const { login } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    getAllPosts();
+  }, []);
+
+  const createPost = async () => {
+    db.firestore()
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .add({ comment, login });
+  };
+
+  const getAllPosts = async () => {
+    db.firestore()
+      .collection("posts")
+      .doc(postId)
+      .collection("comments")
+      .onSnapshot((data) =>
+        setAllComments(data.docs.map((doc) => ({ ...doc.data() })))
+      );
+  };
 
   const onFocusCommentInput = () => {
     setShowKeyboard(true);
@@ -41,38 +69,45 @@ const CommentsScreen = () => {
             source={require("../../assets/nat.png")}
           />
           {/* Список комментариев */}
-
-          <View
-            style={{
-              marginBottom: 24,
-              flexDirection: "row",
-            }}
-          >
-            {/* Аватарка комментария */}
-            <Image
-              style={{
-                borderRadius: 50,
-                width: 28,
-                height: 28,
-                marginRight: 16,
-                marginLeft: 16,
-              }}
-              source={require("../../assets/ava.png")}
-            />
-            {/* Текст комментария */}
-            <View
-              style={{
-                borderTopLeftRadius: 0,
-                borderTopRightRadius: 6,
-                borderBottomLeftRadius: 6,
-                borderBottomRightRadius: 6,
-                backgroundColor: "#00000008",
-                padding: 16,
-              }}
-            >
-              <Text>hello</Text>
-            </View>
-          </View>
+          <FlatList
+            style={styles.list}
+            data={allComments}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View
+                style={{
+                  marginBottom: 24,
+                  flexDirection: "row",
+                }}
+              >
+                {/* Аватарка комментария */}
+                <Image
+                  style={{
+                    borderRadius: 50,
+                    width: 28,
+                    height: 28,
+                    marginRight: 16,
+                    marginLeft: 16,
+                  }}
+                  source={require("../../assets/ava.png")}
+                />
+                {/* Текст комментария */}
+                <View
+                  style={{
+                    borderTopLeftRadius: 0,
+                    borderTopRightRadius: 6,
+                    borderBottomLeftRadius: 6,
+                    borderBottomRightRadius: 6,
+                    backgroundColor: "#00000008",
+                    padding: 16,
+                  }}
+                >
+                  <Text>{item.login}</Text>
+                  <Text>{item.comment}</Text>
+                </View>
+              </View>
+            )}
+          />
           {/* Форма ввода комментария */}
           <View
             style={{
@@ -87,10 +122,15 @@ const CommentsScreen = () => {
               onFocus={onFocusCommentInput}
               onBlur={onBlurCommentInput}
               style={styles.input}
+              onChangeText={setComment}
             />
 
             {/* Кнопка Отправить комментарий */}
-            <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.7}
+              onPress={createPost}
+            >
               <AntDesign name="arrowup" size={20} color="#ffffff" />
             </TouchableOpacity>
           </View>

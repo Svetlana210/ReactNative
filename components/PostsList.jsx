@@ -19,7 +19,7 @@ const PostsList = ({ posts, navigation }) => {
           <Image source={{ uri: item.photo }} style={styles.image} />
 
           {/* Описание */}
-          <Text style={styles.description}>Лес</Text>
+          <Text style={styles.description}>{item.comment}</Text>
 
           <View style={styles.buttonsContainer}>
             {/* Кнопка Комментарии */}
@@ -27,7 +27,7 @@ const PostsList = ({ posts, navigation }) => {
               <TouchableOpacity
                 style={styles.commentsAndLikesBtn}
                 onPress={() => {
-                  navigation.navigate("Comments");
+                  navigation.navigate("Comments", { postId: item.id });
                 }}
               >
                 <Feather
@@ -61,7 +61,7 @@ const PostsList = ({ posts, navigation }) => {
             <TouchableOpacity
               style={styles.locationBtn}
               onPress={() => {
-                navigation.navigate("Map");
+                navigation.navigate("Map", { location: item.location });
               }}
             >
               <Feather

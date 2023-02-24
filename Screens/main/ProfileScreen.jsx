@@ -10,14 +10,35 @@ import {
 import { MaterialIcons, Ionicons, Feather } from "@expo/vector-icons";
 import PostsList from "../../components/PostsList";
 import db from "../../firebase/config";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { authSignOutUser } from "../../redux/auth/authOperations";
 
 const BG = "../../assets/photo.png";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
+  const [userPosts, setUserPosts] = useState([]);
   const dispatch = useDispatch();
-  const signOut = () => [dispatch(authSignOutUser())];
+
+  const { userId } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    getUserPosts();
+  }, []);
+
+  const getUserPosts = async () => {
+    await db
+      .firestore()
+      .collection("posts")
+      .where("userId", "==", userId)
+      .onSnapshot((data) =>
+        setUserPosts(data.docs.map((doc) => ({ ...doc.data() })))
+      );
+  };
+
+  const signOut = () => {
+    dispatch(authSignOutUser());
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground source={require(BG)} style={styles.bgImage}>
@@ -53,7 +74,7 @@ const ProfileScreen = () => {
 
           {/* Профиль имя */}
           <Text style={styles.profileTitle}>Natali Romanova</Text>
-          <PostsList />
+          <PostsList posts={userPosts} navigation={navigation} />
         </View>
       </ImageBackground>
     </View>
